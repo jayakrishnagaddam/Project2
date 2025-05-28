@@ -1,353 +1,284 @@
-# Project2
+<!-- ✅ HEADER with Logo, Search and Navigation -->
+<header class="header">
+  <a routerLink="/user-home" class="logo">TrackFit</a>
 
-/* Reset and base */
+  <!-- 🔍 Search in Navbar -->
+  <div class="navbar-search">
+    <input type="text"
+           [(ngModel)]="searchQuery"
+           class="navbar-search-input"
+           placeholder="Search workouts..." />
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/remainder">Remainder</a>
+    <a routerLink="/profile">Profile</a>
+  </nav>
+
+</header>
+
+<!-- ✅ DASHBOARD CONTENT -->
+<div class="dashboard-container">
+
+  <!-- 🔘 Category Filters -->
+  <div class="category-filter">
+    <button *ngFor="let category of categories"
+            [class.active]="selectedCategory === category"
+            (click)="setCategory(category)">
+      {{ category }}
+    </button>
+  </div>
+
+  <!-- 🏋️ Workout Cards -->
+  <div class="cards-container">
+    <div class="workout-card"
+         *ngFor="let workout of filteredWorkouts"
+         (click)="onCardClick(workout)"
+         [class.expanded]="selectedWorkout === workout">
+
+      <img [src]="workout.image" alt="{{ workout.name }}" class="workout-image" />
+      <h3>{{ workout.name }}</h3>
+      <p>Category: {{ workout.category }}</p>
+      <p>Duration: {{ workout.duration }}</p>
+
+      <!-- 📘 Show instructions only if this card is selected -->
+      <div class="instructions" *ngIf="selectedWorkout === workout">
+        <h4>Instructions:</h4>
+        <ul>
+          <li *ngFor="let step of workout.instructions">{{ step }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ FOOTER -->
+<footer class="footer">
+  <p>
+    <a href="#">Contact Us</a> | <a href="#">Feedback</a>
+  </p>
+</footer>
+
+
+
+/* === Global Reset === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafc;
-  color: #222;
-  line-height: 1.6;
 }
-
-/* HEADER */
+/* === Header/Navbar === */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 32px;
+  justify-content: space-between;
+  padding: 16px 32px;
   background: linear-gradient(to right, #1e1e2f, #2c2c54);
   color: white;
+  flex-wrap: wrap;
+  gap: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  z-index: 100;
 }
 
 .logo {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: bold;
   color: white;
   text-decoration: none;
   cursor: pointer;
 }
 
-.header-icons {
+/* Navbar Search */
+.navbar-search {
+  flex: 1;
+  max-width: 300px;
+}
+
+.navbar-search-input {
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  font-size: 14px;
+  outline: none;
+  background-color: white;
+  color: #333;
+  transition: box-shadow 0.3s ease;
+}
+
+  .navbar-search-input:focus {
+    box-shadow: 0 0 0 2px #00bcd4;
+  }
+
+/* Navigation links */
+.nav-links {
   display: flex;
-  align-items: center;
   gap: 16px;
 }
 
-.notification-icon {
-  color: #ffeb3b;
-  font-size: 22px;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-  .notification-icon:hover {
-    color: #fff700;
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
   }
 
-.profile-icon img {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid #00e5ff;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-  .profile-icon img:hover {
-    transform: scale(1.1);
-  }
-
-/* HERO SECTION */
-.hero-section {
-  background: url('/assets/images/fitness-bg.jpg') no-repeat center center/cover;
-  height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #fff;
-  padding: 20px;
-}
-
-.hero-content {
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 40px;
-  border-radius: 12px;
-  max-width: 600px;
-  animation: fadeInUp 1s ease-out;
-}
-
-  .hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-  }
-
-  .hero-content p {
-    font-size: 1.25rem;
-    line-height: 1.6;
-    margin-bottom: 25px;
-  }
-
-.btn-primary {
-  background: #00e5ff;
-  color: #000;
-  padding: 12px 24px;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.3s ease;
-  display: inline-block;
-}
-
-  .btn-primary:hover {
-    background: #00bcd4;
-    color: #fff;
-  }
-
-/* ANIMATION */
-@keyframes fadeInUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* ABOUT TRACKFIT */
-.about-trackfit {
-  background: #e3f2fd;
-  padding: 50px 30px;
-  text-align: center;
-  border-radius: 15px;
-  margin: 50px auto;
-  max-width: 800px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-}
-
-  .about-trackfit h2 {
-    font-size: 2.3rem;
-    margin-bottom: 25px;
-    color: #2c3e50;
-  }
-
-  .about-trackfit ul {
-    list-style: none;
-    padding: 0;
-    text-align: left;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .about-trackfit li {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    position: relative;
-    padding-left: 25px;
-  }
-
-    .about-trackfit li::before {
-      content: "✔";
-      color: #00e5ff;
-      position: absolute;
-      left: 0;
-      font-weight: bold;
+    .nav-links a:hover {
+      color: #ffcc00;
     }
 
-/* FITNESS FACTS & DID YOU KNOW */
-.fitness-facts {
-  background: #ffffff;
-  margin: 60px auto;
-  padding: 40px 30px;
-  max-width: 1000px;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  text-align: center;
+/* === Dashboard Container === */
+.dashboard-container {
+  padding: 2rem;
+  min-height: 100vh;
 }
 
-  .fitness-facts h2 {
-    font-size: 2.3rem;
-    margin-bottom: 30px;
-    color: #2c3e50;
-  }
-
-.facts-grid {
+/* === Category Filter Buttons === */
+.category-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 10px;
+  margin-bottom: 20px;
   justify-content: center;
 }
 
-.fact-card {
-  background: #f0f4f8;
-  color: #333;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
-  flex: 1 1 280px;
-  transition: transform 0.3s ease;
-}
-
-  .fact-card:hover {
-    transform: translateY(-6px);
+  .category-filter button {
+    padding: 10px 18px;
+    background-color: #eeeeee;
+    border: 2px solid #1e1e2f;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
   }
 
-  .fact-card h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: #007bff;
-  }
-
-  .fact-card p {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-/* WORKOUT TIPS */
-.workout-tips {
-  max-width: 900px;
-  background: #e3f2fd;
-  color: #2c3e50;
-  padding: 50px 30px;
-  margin: 60px auto;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-}
-
-  .workout-tips h2 {
-    text-align: center;
-    font-size: 2.4rem;
-    margin-bottom: 30px;
-  }
-
-  .workout-tips ul {
-    list-style: none;
-    padding: 0;
-    font-size: 1.1rem;
-    line-height: 1.8;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .workout-tips li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-
-    .workout-tips li span {
-      margin-right: 12px;
-      font-size: 1.4rem;
+    .category-filter button:hover {
+      background-color: darkslategrey;
+      color: white;
     }
 
-/* FOOTER */
+    .category-filter button.active {
+      background-color: #1e1e2f;
+      color: white;
+      font-weight: bold;
+      transform: scale(1.05);
+    }
+
+/* === Cards === */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.workout-card {
+  background: #ffffff;
+  border-left: 5px solid #1e1e2f;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 300px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+
+  .workout-card:hover {
+    transform: translateY(-5px);
+    border-left-color:aquamarine;
+  }
+
+  .workout-card.expanded {
+    background-color: #e3f2fd;
+    border-left-color: aquamarine;
+  }
+
+.workout-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+/* Instructions inside expanded card */
+.instructions {
+  margin-top: 1rem;
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+  .instructions h4 {
+    margin-bottom: 0.5rem;
+    color: #1976d2;
+  }
+
+  .instructions ul {
+    padding-left: 20px;
+    list-style-type: disc;
+  }
+
+  .instructions li {
+    margin-bottom: 6px;
+    color: #444;
+  }
+
+/* === Footer === */
 .footer {
   background-color: #1e1e2f;
   color: white;
   text-align: center;
-  padding: 15px 0;
-  font-size: 14px;
+  padding: 16px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
 }
 
   .footer a {
-    color: #00e5ff;
+    color: #ffcc00;
     text-decoration: none;
-    margin: 0 8px;
+    margin: 0 10px;
   }
 
     .footer a:hover {
       text-decoration: underline;
     }
 
+/* === Responsive === */
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
 
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
+  .nav-links {
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+  }
 
+  .navbar-search {
+    width: 100%;
+    margin: 10px 0;
+  }
 
-<header class="header">
-  <a href="/" class="logo">TrackFit</a>
-
-  <div class="header-icons">
-    <!-- Bell icon linking to remainders -->
-    <a href="/remainders" class="notification-icon" title="Notifications">
-      <i class="fas fa-bell"></i>
-    </a>
-
-    <!-- Profile icon -->
-    <a href="/profile" class="profile-icon">
-      <img src="/assets/images/user-icon.png" alt="Profile" />
-    </a>
-  </div>
-</header>
-
-
-
-<section class="hero-section">
-  <div class="hero-content">
-    <h1>Welcome to TrackFit</h1>
-    <p>Your journey to a healthier lifestyle starts here. Discover workouts, track your progress, and stay motivated.</p>
-    <a routerLink="/user-dashboard" class="btn-primary">Explore Now</a>
-  </div>
-</section>
-
-<section class="about-trackfit">
-  <h2>About TrackFit</h2>
-  <ul>
-    <li>Personalized fitness tracking</li>
-    <li>Goal setting and progress monitoring</li>
-    <li>Expert-recommended workouts</li>
-    <li>Motivational tips and daily reminders</li>
-  </ul>
-</section>
-
-<section class="fitness-facts">
-  <h2>Fitness Facts</h2>
-  <div class="facts-grid">
-    <div class="fact-card">Exercise improves mental health and mood.</div>
-    <div class="fact-card">30 minutes a day can make a big difference.</div>
-    <div class="fact-card">Staying hydrated boosts energy levels.</div>
-  </div>
-</section>
-
-<section class="fitness-facts">
-  <h2>Did You Know?</h2>
-  <div class="facts-grid">
-    <div class="fact-card">
-      <h3>30 Minutes</h3>
-      <p>of moderate exercise daily can boost your mood and energy.</p>
-    </div>
-    <div class="fact-card">
-      <h3>Regular Workouts</h3>
-      <p>help improve your heart health and reduce risk of chronic diseases.</p>
-    </div>
-    <div class="fact-card">
-      <h3>Consistency</h3>
-      <p>is the key to long-term fitness success. Start small, stay committed!</p>
-    </div>
-  </div>
-</section>
-
-<section class="workout-tips">
-  <h2>Pro Tips for Your Workouts</h2>
-  <ul>
-    <li><span>💧</span> Stay hydrated before, during, and after exercise.</li>
-    <li><span>🧘‍♂️</span> Warm up properly to avoid injuries.</li>
-    <li><span>🍎</span> Fuel your body with nutritious meals.</li>
-    <li><span>😴</span> Get enough rest for better recovery.</li>
-  </ul>
-</section>
-
-<footer class="footer">
-  <p>&copy; 2025 TrackFit | <a href="#">Contact Us</a> | <a href="#">Privacy Policy</a></p>
-</footer>t
+  .category-filter {
+    justify-content: center;
+  }
+}
