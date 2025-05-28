@@ -1,284 +1,124 @@
-<!-- ✅ HEADER with Logo, Search and Navigation -->
-<header class="header">
-  <a routerLink="/user-home" class="logo">TrackFit</a>
+import { Component } from '@angular/core';
 
-  <!-- 🔍 Search in Navbar -->
-  <div class="navbar-search">
-    <input type="text"
-           [(ngModel)]="searchQuery"
-           class="navbar-search-input"
-           placeholder="Search workouts..." />
-  </div>
-
-  <nav class="nav-links">
-    <a routerLink="/remainder">Remainder</a>
-    <a routerLink="/profile">Profile</a>
-  </nav>
-
-</header>
-
-<!-- ✅ DASHBOARD CONTENT -->
-<div class="dashboard-container">
-
-  <!-- 🔘 Category Filters -->
-  <div class="category-filter">
-    <button *ngFor="let category of categories"
-            [class.active]="selectedCategory === category"
-            (click)="setCategory(category)">
-      {{ category }}
-    </button>
-  </div>
-
-  <!-- 🏋️ Workout Cards -->
-  <div class="cards-container">
-    <div class="workout-card"
-         *ngFor="let workout of filteredWorkouts"
-         (click)="onCardClick(workout)"
-         [class.expanded]="selectedWorkout === workout">
-
-      <img [src]="workout.image" alt="{{ workout.name }}" class="workout-image" />
-      <h3>{{ workout.name }}</h3>
-      <p>Category: {{ workout.category }}</p>
-      <p>Duration: {{ workout.duration }}</p>
-
-      <!-- 📘 Show instructions only if this card is selected -->
-      <div class="instructions" *ngIf="selectedWorkout === workout">
-        <h4>Instructions:</h4>
-        <ul>
-          <li *ngFor="let step of workout.instructions">{{ step }}</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ✅ FOOTER -->
-<footer class="footer">
-  <p>
-    <a href="#">Contact Us</a> | <a href="#">Feedback</a>
-  </p>
-</footer>
-
-
-
-/* === Global Reset === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+interface Workout {
+  name: string;
+  category: string;
+  duration: string;
+  image: string;
+  instructions: string[];
 }
 
+@Component({
+  selector: 'app-user-dashboard',
+  templateUrl: './user-dashboard.component.html',
+  styleUrls: ['./user-dashboard.component.css']
+})
+export class UserDashboardComponent {
+  searchQuery: string = '';
+  selectedCategory: string = 'All';
+  selectedWorkout: Workout | null = null;
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f9fafc;
-}
-/* === Header/Navbar === */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 32px;
-  background: linear-gradient(to right, #1e1e2f, #2c2c54);
-  color: white;
-  flex-wrap: wrap;
-  gap: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+  categories: string[] = ['All', 'Cardio', 'Strength', 'Flexibility', 'Endurance'];
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Navbar Search */
-.navbar-search {
-  flex: 1;
-  max-width: 300px;
-}
-
-.navbar-search-input {
-  width: 100%;
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: none;
-  font-size: 14px;
-  outline: none;
-  background-color: white;
-  color: #333;
-  transition: box-shadow 0.3s ease;
-}
-
-  .navbar-search-input:focus {
-    box-shadow: 0 0 0 2px #00bcd4;
-  }
-
-/* Navigation links */
-.nav-links {
-  display: flex;
-  gap: 16px;
-}
-
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
-  }
-
-    .nav-links a:hover {
-      color: #ffcc00;
+  workouts: Workout[] = [
+    {
+      name: 'Push Ups',
+      category: 'Strength',
+      duration: '15 mins',
+      image: 'assets/images/pushups.jpg',
+      instructions: [
+        'Place your hands shoulder-width apart.',
+        'Keep your body straight.',
+        'Lower yourself until your chest nearly touches the floor.',
+        'Push back up to the starting position.',
+      ]
+    },
+    {
+      name: 'Running',
+      category: 'Cardio',
+      duration: '30 mins',
+      image: 'assets/images/running.jpg',
+      instructions: [
+        'Warm up with a light jog.',
+        'Maintain a steady pace.',
+        'Cool down by walking.',
+      ]
+    },
+    {
+      name: 'Yoga',
+      category: 'Flexibility',
+      duration: '20 mins',
+      image: 'assets/images/yoga.jpg',
+      instructions: [
+        'Start with deep breathing.',
+        'Perform basic yoga poses.',
+        'Focus on stretching and flexibility.',
+      ]
+    },
+    {
+      name: 'Cycling',
+      category: 'Cardio',
+      duration: '45 mins',
+      image: 'assets/images/cycling.jpg',
+      instructions: [
+        'Adjust your bike seat for comfort.',
+        'Maintain a steady pace.',
+        'Wear a helmet for safety.',
+      ]
+    },
+    {
+      name: 'Plank',
+      category: 'Endurance',
+      duration: '5 mins',
+      image: 'assets/images/plank.jpg',
+      instructions: [
+        'Keep your forearms on the ground.',
+        'Maintain a straight line from head to heels.',
+        'Hold the position as long as possible.',
+      ]
+    },
+    {
+      name: 'Squats',
+      category: 'Strength',
+      duration: '20 mins',
+      image: 'assets/images/squats.jpg',
+      instructions: [
+        'Stand with feet shoulder-width apart.',
+        'Lower your body as if sitting on a chair.',
+        'Keep your back straight.',
+        'Return to starting position.',
+      ]
+    },
+    {
+      name: 'Jump Rope',
+      category: 'Cardio',
+      duration: '10 mins',
+      image: 'assets/images/jumprope.jpg',
+      instructions: [
+        'Hold handles firmly.',
+        'Jump with both feet together.',
+        'Maintain a steady rhythm.',
+      ]
     }
+  ];
 
-/* === Dashboard Container === */
-.dashboard-container {
-  padding: 2rem;
-  min-height: 100vh;
-}
-
-/* === Category Filter Buttons === */
-.category-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
-}
-
-  .category-filter button {
-    padding: 10px 18px;
-    background-color: #eeeeee;
-    border: 2px solid #1e1e2f;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+  get filteredWorkouts(): Workout[] {
+    return this.workouts.filter(workout =>
+      (this.selectedCategory === 'All' || workout.category === this.selectedCategory) &&
+      workout.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
   }
 
-    .category-filter button:hover {
-      background-color: darkslategrey;
-      color: white;
+  setCategory(category: string) {
+    this.selectedCategory = category;
+    this.selectedWorkout = null; // Close instructions on category change
+  }
+
+  onCardClick(workout: Workout) {
+    if (this.selectedWorkout === workout) {
+      this.selectedWorkout = null; // Collapse if same card clicked
+    } else {
+      this.selectedWorkout = workout; // Expand clicked card
     }
-
-    .category-filter button.active {
-      background-color: #1e1e2f;
-      color: white;
-      font-weight: bold;
-      transform: scale(1.05);
-    }
-
-/* === Cards === */
-.cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
-}
-
-.workout-card {
-  background: #ffffff;
-  border-left: 5px solid #1e1e2f;
-  border-radius: 12px;
-  padding: 1rem;
-  width: 300px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-}
-
-  .workout-card:hover {
-    transform: translateY(-5px);
-    border-left-color:aquamarine;
-  }
-
-  .workout-card.expanded {
-    background-color: #e3f2fd;
-    border-left-color: aquamarine;
-  }
-
-.workout-image {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-/* Instructions inside expanded card */
-.instructions {
-  margin-top: 1rem;
-  text-align: left;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-  .instructions h4 {
-    margin-bottom: 0.5rem;
-    color: #1976d2;
-  }
-
-  .instructions ul {
-    padding-left: 20px;
-    list-style-type: disc;
-  }
-
-  .instructions li {
-    margin-bottom: 6px;
-    color: #444;
-  }
-
-/* === Footer === */
-.footer {
-  background-color: #1e1e2f;
-  color: white;
-  text-align: center;
-  padding: 16px;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-}
-
-  .footer a {
-    color: #ffcc00;
-    text-decoration: none;
-    margin: 0 10px;
-  }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-/* === Responsive === */
-@media (max-width: 768px) {
-  .cards-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-links {
-    justify-content: center;
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  .navbar-search {
-    width: 100%;
-    margin: 10px 0;
-  }
-
-  .category-filter {
-    justify-content: center;
   }
 }
